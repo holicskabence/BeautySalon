@@ -1,3 +1,4 @@
+using BookingApp.Endpoint.Services;
 using BookingApp.Logic.Classes;
 using BookingApp.Models.Models;
 using BookingApp.Repository.Database;
@@ -38,6 +39,8 @@ builder.Services.AddTransient<IRepository<Service>, ServiceRepository>();
 
 builder.Services.AddTransient<IAppointmentLogic, AppointmentLogic>();
 builder.Services.AddTransient<IServiceLogic, ServiceLogic>();
+
+builder.Services.AddSignalR();
 
 //Bejelentkezés authentikálása JWT
 builder.Services.AddAuthentication
@@ -91,5 +94,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllers();
+//    endpoints.MapHub<SignalRHub>("/hub");
+//});
 
 app.Run();

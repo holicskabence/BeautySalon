@@ -42,5 +42,65 @@ namespace BookingApp.Logic.Classes
         {
             this.repo.Update(item);
         }
+        //NonCRUD
+
+        public IEnumerable<DateTime> FreeTimes()
+        {
+            List<DateTime> freetimes = new List<DateTime>();
+            DateTime currentDate = DateTime.Today;
+            //Kezdeti és végdátum beállítása
+            DateTime startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 10, 0, 0);
+            DateTime endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day+14, 18, 0, 0);
+
+            while (startTime < endTime)
+            {
+                if ((startTime.DayOfWeek != DayOfWeek.Saturday && startTime.DayOfWeek != DayOfWeek.Sunday) && startTime.Hour >= 10 && startTime.Hour < 18)
+                {
+                    freetimes.Add(startTime);
+                }
+                //Mennyi időnként lehessen foglalni
+                startTime = startTime.AddMinutes(30);
+            }
+
+            foreach (var item in repo.ReadAll())
+            {
+                DateTime appointmentTime = item.Time;
+                int serviceLastTime = item.FullTime;
+                DateTime serviceEndTime = appointmentTime.AddMinutes(serviceLastTime);
+
+                freetimes.RemoveAll(t => t >= appointmentTime && t < serviceEndTime);
+            }
+
+            return freetimes.AsEnumerable();
+
+            //List<DateTime> szabadOrak = new List<DateTime>();
+            //DateTime currentDate = DateTime.Today;
+            //DateTime startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 10, 0, 0);
+            //DateTime endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 18, 0, 0);
+
+            //while (startTime < endTime)
+            //{
+            //    if (startTime.DayOfWeek != DayOfWeek.Saturday && startTime.DayOfWeek != DayOfWeek.Sunday && startTime.Hour >= 10 && startTime.Hour < 18)
+            //    {
+            //        szabadOrak.Add(startTime);
+            //    }
+
+            //    startTime = startTime.AddMinutes(60);
+            //}
+
+            //foreach (var item in this.repo.ReadAll())
+            //{
+            //    DateTime foglalasIdopont = item.Time;
+            //    int szolgaltatasIdo = item.FullTime;
+            //    DateTime foglalasVege = foglalasIdopont.AddMinutes(szolgaltatasIdo);
+
+            //    szabadOrak.RemoveAll(t => t >= foglalasIdopont && t < foglalasVege);
+            //}
+
+            //return szabadOrak;
+
+        }
+
+
     }
 }

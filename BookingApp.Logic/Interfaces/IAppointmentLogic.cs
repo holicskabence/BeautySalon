@@ -9,5 +9,6 @@ namespace BookingApp.Logic.Classes
         Appointment Read(string id);
         IQueryable<Appointment> ReadAll();
         void Update(Appointment item);
+        IEnumerable<DateTime> FreeTimes();
     }
 }

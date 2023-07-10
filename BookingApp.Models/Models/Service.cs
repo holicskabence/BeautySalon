@@ -14,6 +14,7 @@ namespace BookingApp.Models.Models
         public string Name { get; set; }
         public int Cost { get; set; }
         public int Time { get; set; }
+        public string Category { get; set; }
         public Service()
         {
             Id = Guid.NewGuid().ToString();

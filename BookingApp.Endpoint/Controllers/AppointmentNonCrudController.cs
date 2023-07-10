@@ -1,4 +1,5 @@
 ﻿using BookingApp.Logic.Classes;
+using BookingApp.Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace BookingApp.Endpoint.Controllers
             this.logic = logic;
         }
         [HttpGet]
-        public IEnumerable<DateTime> FreeTimes()
+        public IEnumerable<FreeTime> FreeTimes()
         {
             return this.logic.FreeTimes();
         }

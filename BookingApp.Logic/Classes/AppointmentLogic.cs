@@ -1,5 +1,6 @@
 ﻿using BookingApp.Models.Models;
 using BookingApp.Repository.Interfaces;
+using System.Security.Cryptography;
 
 namespace BookingApp.Logic.Classes
 {
@@ -44,13 +45,13 @@ namespace BookingApp.Logic.Classes
         }
         //NonCRUD
 
-        public IEnumerable<DateTime> FreeTimes()
+        public IEnumerable<FreeTime> FreeTimes()
         {
             List<DateTime> freetimes = new List<DateTime>();
             DateTime currentDate = DateTime.Today;
             //Kezdeti és végdátum beállítása
             DateTime startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 10, 0, 0);
-            DateTime endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day+14, 18, 0, 0);
+            DateTime endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 14, 18, 0, 0);
 
             while (startTime < endTime)
             {
@@ -61,7 +62,7 @@ namespace BookingApp.Logic.Classes
                 //Mennyi időnként lehessen foglalni
                 startTime = startTime.AddMinutes(30);
             }
-
+            //Foglalt időpontok kivétele
             foreach (var item in repo.ReadAll())
             {
                 DateTime appointmentTime = item.Time;
@@ -70,37 +71,34 @@ namespace BookingApp.Logic.Classes
 
                 freetimes.RemoveAll(t => t >= appointmentTime && t < serviceEndTime);
             }
+            //Átalakítás 
+            List<FreeTime> result=new List<FreeTime>();
+            FreeTime tmp = new FreeTime()
+            {
+                DayName = freetimes[0].DayOfWeek.ToString(),
+                DayNumber = freetimes[0].Day
+            };
+            foreach(var item in freetimes) 
+            {
+                if (item.Day == tmp.DayNumber)
+                {
+                    tmp.freeHours.Add(item);
+                }
+                else
+                {
+                    result.Add(tmp);
+                    tmp= new FreeTime()
+                    {
+                        DayName = item.DayOfWeek.ToString(),
+                        DayNumber =item.Day,
+                        DayMonth= item.Month + "." + item.Day
+                    };
+                }
+            }
 
-            return freetimes.AsEnumerable();
-
-            //List<DateTime> szabadOrak = new List<DateTime>();
-            //DateTime currentDate = DateTime.Today;
-            //DateTime startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 10, 0, 0);
-            //DateTime endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 18, 0, 0);
-
-            //while (startTime < endTime)
-            //{
-            //    if (startTime.DayOfWeek != DayOfWeek.Saturday && startTime.DayOfWeek != DayOfWeek.Sunday && startTime.Hour >= 10 && startTime.Hour < 18)
-            //    {
-            //        szabadOrak.Add(startTime);
-            //    }
-
-            //    startTime = startTime.AddMinutes(60);
-            //}
-
-            //foreach (var item in this.repo.ReadAll())
-            //{
-            //    DateTime foglalasIdopont = item.Time;
-            //    int szolgaltatasIdo = item.FullTime;
-            //    DateTime foglalasVege = foglalasIdopont.AddMinutes(szolgaltatasIdo);
-
-            //    szabadOrak.RemoveAll(t => t >= foglalasIdopont && t < foglalasVege);
-            //}
-
-            //return szabadOrak;
-
+            return result.AsEnumerable();
         }
 
 
+        }
     }
-}

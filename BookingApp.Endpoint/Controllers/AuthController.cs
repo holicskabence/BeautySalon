@@ -28,7 +28,11 @@ namespace BookingApp.Endpoint.Controllers
             var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var claim = new List<Claim> { new Claim(JwtRegisteredClaimNames.Sub, user.UserName) };
+                var claim = new List<Claim>
+                { 
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(ClaimTypes.Name, user.Email)
+                };
                 foreach (var role in await _userManager.GetRolesAsync(user))
                 {
                     claim.Add(new Claim(ClaimTypes.Role, role));
@@ -70,17 +74,26 @@ namespace BookingApp.Endpoint.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserInfos()
         {
+            //var asd=new Claim(ClaimTypes.Name, user.Email)
             var user = _userManager.Users.FirstOrDefault(t => t.Email == this.User.Identity.Name);
-            return Ok(new
+            if(user != null)
             {
-                UserName = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                //PhotoData = user.PhotoData,
-                //PhotoContentType = user.PhotoContentType,
-                Roles = await _userManager.GetRolesAsync(user)
-            });
+                return Ok(new
+                {
+                    Id=user.Id,
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    //PhotoData = user.PhotoData,
+                    //PhotoContentType = user.PhotoContentType,
+                    Roles = await _userManager.GetRolesAsync(user)
+                });
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         [Authorize]

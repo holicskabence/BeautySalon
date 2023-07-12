@@ -4,6 +4,7 @@ using BookingApp.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingApp.Repository.Migrations
 {
     [DbContext(typeof(BookingDbContext))]
-    partial class BookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230710142300_NameAdded")]
+    partial class NameAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,6 +110,9 @@ namespace BookingApp.Repository.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -150,18 +155,18 @@ namespace BookingApp.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e2556c9b-e9a6-4683-8b29-121a225322d2",
+                            Id = "bf1cb4b2-b644-48ea-b581-bb51ebb93191",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fe3beb57-50fa-4eca-8d03-aa99a0febbda",
+                            ConcurrencyStamp = "9f63b53f-ecd5-42bd-a817-2bc2de5c4dc6",
                             Email = "benceholicska@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Holicska",
                             LastName = "Bence",
                             LockoutEnabled = false,
                             NormalizedUserName = "HBENCE19",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEGYT2po0Z+s/MCmLzjnOQL4DBdmjmBI7dIKHvFyCzco09P483JYkwsR8BIu8YyVNg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECyltBrLZMLn9qsJguC/Aa5VarJc3bRNCth5ahXkgDiYUYDY/pELO8fYsCM0qJx8zA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "15e07ce8-e6fd-45a8-bb23-8edcf7fa745c",
+                            SecurityStamp = "6b296780-5f93-4a7e-9d2a-8171bcfc5e46",
                             TwoFactorEnabled = false,
                             UserName = "hbence19"
                         });

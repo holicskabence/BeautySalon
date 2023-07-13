@@ -29,7 +29,7 @@ namespace BookingApp.Endpoint.Controllers
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var claim = new List<Claim>
-                { 
+                {
                     new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                     new Claim(ClaimTypes.Name, user.Email)
                 };
@@ -76,11 +76,11 @@ namespace BookingApp.Endpoint.Controllers
         {
             //var asd=new Claim(ClaimTypes.Name, user.Email)
             var user = _userManager.Users.FirstOrDefault(t => t.Email == this.User.Identity.Name);
-            if(user != null)
+            if (user != null)
             {
                 return Ok(new
                 {
-                    Id=user.Id,
+                    Id = user.Id,
                     UserName = user.UserName,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -121,6 +121,73 @@ namespace BookingApp.Endpoint.Controllers
             //user.PhotoData = model.PhotoData;
             await _userManager.UpdateAsync(user);
             return Ok();
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> Facebook([FromBody] SocialToken token)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://graph.facebook.com");
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await client.GetAsync($"me?fields=first_name,last_name,picture,email&access_token={token.Token}");
+            var result = await response.Content.ReadFromJsonAsync<FbModel>();
+            if (result != null)
+            {
+                SiteUser user = new SiteUser
+                {
+                    FirstName = result.last_name,
+                    LastName = result.first_name,
+                    Email = result.email,
+                    UserName = result.email,
+                };
+                return await SocialAuth(user);
+            }
+            return Unauthorized();
+        }
+
+
+        private async Task<IActionResult> SocialAuth(SiteUser user)
+        {
+            if (_userManager.Users.FirstOrDefault(t => t.Email == user.Email) == null)
+            {
+                var res = await _userManager.CreateAsync(user);
+                if (res.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "Customer");
+                }
+            }
+            var appuser = await _userManager.FindByEmailAsync(user.Email);
+            if (appuser != null)
+            {
+                var claim = new List<Claim> {
+                    new Claim(JwtRegisteredClaimNames.Sub, appuser.UserName),
+                    new Claim(JwtRegisteredClaimNames.NameId, appuser.UserName),
+                    new Claim(JwtRegisteredClaimNames.Name, appuser.UserName)
+                };
+                foreach (var role in await _userManager.GetRolesAsync(appuser))
+                {
+                    claim.Add(new Claim(ClaimTypes.Role, role));
+                }
+
+                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
+                ("nagyonhosszutitkoskodhelye"));
+                var token = new JwtSecurityToken(
+                issuer: "http://www.security.org", audience: "http://www.security.org",
+                claims: claim, expires: DateTime.Now.AddMinutes(60),
+                signingCredentials: new SigningCredentials
+                (signinKey, SecurityAlgorithms.HmacSha256)
+                );
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+
+            }
+            return Unauthorized();
+
         }
     }
 }

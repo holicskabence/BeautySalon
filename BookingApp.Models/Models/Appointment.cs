@@ -17,11 +17,9 @@ namespace BookingApp.Models.Models
         public int Cost { get; set; }
         public int FullTime { get; set; }
         public string ServicesAsJson { get; set; }
-        //public virtual ICollection<Service> Services { get; set; }
         public Appointment()
         {
             Id = Guid.NewGuid().ToString();
-            //Services=new HashSet<Service>();
         }
 
     }

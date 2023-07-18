@@ -51,7 +51,7 @@ namespace BookingApp.Logic.Classes
             DateTime currentDate = DateTime.Today;
             //Kezdeti és végdátum beállítása
             DateTime startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 10, 0, 0);
-            DateTime endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 14, 18, 0, 0);
+            DateTime endTime = currentDate.AddDays(14).Date.AddHours(18);
 
             while (startTime < endTime)
             {
@@ -72,13 +72,13 @@ namespace BookingApp.Logic.Classes
                 freetimes.RemoveAll(t => t >= appointmentTime && t < serviceEndTime);
             }
             //Átalakítás 
-            List<FreeTime> result=new List<FreeTime>();
+            List<FreeTime> result = new List<FreeTime>();
             FreeTime tmp = new FreeTime()
             {
                 DayName = freetimes[0].DayOfWeek.ToString(),
                 DayNumber = freetimes[0].Day
             };
-            foreach(var item in freetimes) 
+            foreach (var item in freetimes)
             {
                 if (item.Day == tmp.DayNumber)
                 {
@@ -87,18 +87,18 @@ namespace BookingApp.Logic.Classes
                 else
                 {
                     result.Add(tmp);
-                    tmp= new FreeTime()
+                    tmp = new FreeTime()
                     {
                         DayName = item.DayOfWeek.ToString(),
-                        DayNumber =item.Day,
-                        DayMonth= item.Month + "." + item.Day
+                        DayNumber = item.Day,
+                        DayMonth = item.ToString("M.d")
                     };
                 }
             }
 
+            result.Add(tmp); // Az utolsó időpont hozzáadása a listához
+
             return result.AsEnumerable();
         }
-
-
-        }
     }
+}

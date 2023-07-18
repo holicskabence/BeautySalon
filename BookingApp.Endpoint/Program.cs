@@ -1,4 +1,3 @@
-
 using BookingApp.Logic.Classes;
 using BookingApp.Models.Models;
 using BookingApp.Repository.Database;
@@ -94,11 +93,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapControllers();
-//    endpoints.MapHub<SignalRHub>("/hub");
-//});
 
 app.Run();

@@ -3,7 +3,6 @@ using BookingApp.Logic.Classes;
 using BookingApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System.Diagnostics.Metrics;
 
 namespace BookingApp.Endpoint.Controllers
 {

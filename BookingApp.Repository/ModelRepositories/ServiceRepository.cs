@@ -2,20 +2,12 @@
 using BookingApp.Repository.Database;
 using BookingApp.Repository.GenericRepository;
 using BookingApp.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookingApp.Repository.ModelRepositories
 {
     public class ServiceRepository : Repository<Service>, IRepository<Service>
     {
-        public ServiceRepository(BookingDbContext ctx) : base(ctx)
-        {
-
-        }
+        public ServiceRepository(BookingDbContext ctx) : base(ctx){}
 
         public override Service Read(string id)
         {

@@ -1,6 +1,5 @@
 ﻿using BookingApp.Models.Models;
 using BookingApp.Repository.Interfaces;
-using System.Security.Cryptography;
 
 namespace BookingApp.Logic.Classes
 {

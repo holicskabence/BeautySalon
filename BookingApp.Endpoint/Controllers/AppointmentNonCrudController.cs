@@ -1,6 +1,5 @@
 ﻿using BookingApp.Logic.Classes;
 using BookingApp.Models.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Endpoint.Controllers

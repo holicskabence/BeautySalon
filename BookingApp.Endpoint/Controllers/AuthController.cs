@@ -85,6 +85,8 @@ namespace BookingApp.Endpoint.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
+                    Mobil=user.PhoneNumber,
+
                     //PhotoData = user.PhotoData,
                     //PhotoContentType = user.PhotoContentType,
                     Roles = await _userManager.GetRolesAsync(user)

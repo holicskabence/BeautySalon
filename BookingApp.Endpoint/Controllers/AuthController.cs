@@ -31,7 +31,7 @@ namespace BookingApp.Endpoint.Controllers
                 var claim = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(ClaimTypes.Name, user.Email)
+                    new Claim(ClaimTypes.Name, user.Email),
                 };
                 foreach (var role in await _userManager.GetRolesAsync(user))
                 {
@@ -74,7 +74,6 @@ namespace BookingApp.Endpoint.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserInfos()
         {
-            //var asd=new Claim(ClaimTypes.Name, user.Email)
             var user = _userManager.Users.FirstOrDefault(t => t.Email == this.User.Identity.Name);
             if (user != null)
             {
@@ -112,13 +111,14 @@ namespace BookingApp.Endpoint.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateProfile([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateViewModel model)
         {
             var user = _userManager.Users.FirstOrDefault(t => t.Email == this.User.Identity.Name);
             user.Email = model.Email;
-            user.UserName = model.UserName;
+            user.UserName = model.Email;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
+            user.PhoneNumber = model.Mobil;
             //user.PhotoContentType = model.PhotoContentType;
             //user.PhotoData = model.PhotoData;
             await _userManager.UpdateAsync(user);

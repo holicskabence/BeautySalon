@@ -90,7 +90,7 @@ namespace BookingApp.Logic.Classes
                     {
                         DayName = item.DayOfWeek.ToString(),
                         DayNumber = item.Day,
-                        DayMonth = item.ToString("M.d")
+                        DayMonth = item.ToString("MM.dd.")
                     };
                 }
             }
